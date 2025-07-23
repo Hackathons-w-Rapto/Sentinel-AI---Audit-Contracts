@@ -12,15 +12,22 @@ const loadingStates = [
   { text: "Finalizing audit report" },
 ];
 
-type ReportItem = {
-  name: string;
-  severity: string;
+type AIResponse = {
+  candidates: {
+    content: {
+      parts: {
+        text: string;
+      }[];
+    };
+  }[];
 };
+
+
 
 export default function SentinelLanding() {
   const [contractCode, setContractCode] = useState("");
   const [loading, setLoading] = useState(false);
-  const [report, setReport] = useState<any | null>(null);
+  const [report, setReport] = useState<AIResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -37,8 +44,12 @@ export default function SentinelLanding() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Unknown error");
       setReport(data.result);
-    } catch (err: any) {
-      setError(err.message || "Failed to audit contract");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred.");
+      }
     } finally {
       setLoading(false);
     }
