@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { MultiStepLoader as Loader } from "../components/ui/multi-step-loader";
 import { IconSquareRoundedX } from "@tabler/icons-react";
 import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight";
+import removeMarkdown from "remove-markdown";
 
 const loadingStates = [
   { text: "Analyzing bytecode" },
@@ -45,7 +46,6 @@ export default function SentinelLanding() {
 
   return (
     <div className="bg-white dark:bg-black min-h-screen">
-      {/* 🦸 Hero Section */}
       <HeroHighlight containerClassName="bg-gray-50 dark:bg-black">
         <div className="text-center px-4">
           <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-4">
@@ -57,7 +57,6 @@ export default function SentinelLanding() {
           </p>
         </div>
       </HeroHighlight>
-
 
       <div className="bg-gray-50 dark:bg-black py-12 px-6 flex flex-col items-center">
         <form
@@ -102,16 +101,18 @@ export default function SentinelLanding() {
         )}
 
         {report && (
-          <div className="w-full max-w-xl bg-white dark:bg-zinc-900 rounded-xl p-6 shadow-lg border dark:border-zinc-700 transition-all">
-            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+          <div className="w-full max-w-4xl bg-white dark:bg-zinc-900 rounded-xl p-8 shadow-lg border dark:border-zinc-700 transition-all">
+            <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">
               🧪 Vulnerability Report
             </h2>
             {report.candidates && report.candidates[0]?.content?.parts ? (
-              <pre className="whitespace-pre-wrap text-sm text-gray-800 dark:text-gray-200">
-                {report.candidates[0].content.parts[0].text}
+              <pre className="whitespace-pre-wrap text-sm md:text-base font-mono text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-zinc-800 p-6 rounded-lg overflow-x-auto">
+                {removeMarkdown(report.candidates[0].content.parts[0].text)}
               </pre>
             ) : (
-              <div>No vulnerabilities found or unexpected response format.</div>
+              <div className="text-gray-600 dark:text-gray-400">
+                No vulnerabilities found or unexpected response format.
+              </div>
             )}
           </div>
         )}
